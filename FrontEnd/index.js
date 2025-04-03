@@ -264,3 +264,44 @@ modalBtn.addEventListener("click", () => {
     loadCategories();
     displayWorksInModal();
 });
+
+// Gestion de l'aperçu de la photo pour l'ajout de travail
+const photoInput = document.getElementById("photo-input");
+const photoPreviewContainer = document.getElementById("photo-preview-container");
+const photoPreview = document.getElementById("photo-preview");
+const addPhotoBtn = document.querySelector('.add-photo-btn');
+
+photoInput.addEventListener("change", function(event) {
+    const file = event.target.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            photoPreview.src = e.target.result;
+            photoPreviewContainer.classList.remove("hidden");
+            addPhotoBtn.classList.add("image-selected");
+        };
+
+        reader.readAsDataURL(file);
+    } else {
+        photoPreviewContainer.classList.add("hidden");
+        addPhotoBtn.classList.remove("image-selected");
+    }
+});
+
+// Fonction pour basculer l'affichage en mode édition en fonction de la connexion de l'utilisateur
+function toggleModeEdition() {
+    const modeEditionElement = document.getElementById("mode-edition");
+
+    if (isConnected()) {
+        modeEditionElement.style.display = "flex";
+    } else {
+        modeEditionElement.style.display = "none";
+    }
+}
+
+toggleModeEdition();
+
+// Écouteur d'événements pour l'envoi du formulaire d'ajout de travail
+addWorkForm.addEventListener('submit', addWork);
