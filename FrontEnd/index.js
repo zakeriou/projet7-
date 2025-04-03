@@ -248,3 +248,19 @@ function addWorkToGallery(newWork) {
     figure.appendChild(figcaption);
     container.appendChild(figure);
 }
+// Fonction pour charger les catégories et les afficher dans le formulaire d'ajout de travail
+async function loadCategories() {
+    workCategorySelect.innerHTML = '';
+    const categories = await (await fetch(categoriesUrl)).json();
+    workCategorySelect.innerHTML = '<option value=""></option>';
+    workCategorySelect.innerHTML += categories.map(category => 
+        `<option value="${category.id}">${category.name}</option>`
+    ).join('');
+}
+
+// Affichage du formulaire modal et chargement des catégories
+modalBtn.addEventListener("click", () => {
+    modalContainer.style.display = "flex";
+    loadCategories();
+    displayWorksInModal();
+});
