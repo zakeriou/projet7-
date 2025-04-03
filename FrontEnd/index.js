@@ -82,3 +82,94 @@ async function setupFilters() {
 }
 
 setupFilters();
+
+// Vérification si l'utilisateur est connecté en vérifiant la présence d'un token dans le localStorage
+function isConnected() {
+    const token = localStorage.getItem("token");
+    return !!token;
+}
+
+// Mise à jour de l'affichage en fonction de la connexion de l'utilisateur
+if (isConnected()) {
+    loginElement.classList.add("hidden");
+    logoutElement.classList.remove("hidden");
+    modalBtn.style.display = "block";
+    filtersContainer.style.display = "none";
+} else {
+    modalBtn.style.display = "none";
+    filtersContainer.style.display = "flex";
+}
+
+// Fonction de déconnexion de l'utilisateur
+function logout() {
+    localStorage.removeItem("token");
+    loginElement.classList.remove("hidden");
+    logoutElement.classList.add("hidden");
+    modalBtn.style.display = "none";
+    modalContainer.style.display = "none";
+    filtersContainer.style.display = "block";
+}
+
+logoutElement.addEventListener("click", logout);
+
+// Affichage des travaux dans le modal (galerie) et configuration des interactions (ajouter un travail, supprimer un travail)
+async function displayWorksInModal() {
+    const works = await getWorks();
+    galleryModal.innerHTML = "";
+    const modalWorks = document.querySelector("#modal-works");
+    const modalForm = document.querySelector("#modal-form");
+    modalWorks.style.display = "flex";
+    modalForm.style.display = "none";
+    works.forEach(work => {
+        const imgContainer = document.createElement('div');
+        imgContainer.classList.add('img-container');
+        const img = document.createElement('img');
+        img.src = work.imageUrl;
+        img.alt = work.title;
+        img.style.width = '79px';
+        img.style.height = '118px';
+        const deleteIcon = document.createElement('button');
+        deleteIcon.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        deleteIcon.classList.add('delete-icon');
+        deleteIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteWork(work.id);
+            imgContainer.remove();
+        });
+        imgContainer.appendChild(deleteIcon);
+        imgContainer.appendChild(img);
+        galleryModal.appendChild(imgContainer);
+    });
+
+    const addWorkBtn = document.querySelector(".add-work-btn");
+    addWorkBtn.addEventListener("click", () => {
+        modalWorks.style.display = "none";
+        modalForm.style.display = "flex";
+    });
+}
+
+// Affichage du modal lors du clic sur le bouton "modifier"
+modalBtn.addEventListener("click", () => {
+    modalContainer.style.display = "flex";
+    displayWorksInModal();
+});
+
+// Fermeture du modal lorsque l'on clique sur le bouton de fermeture ou à l'extérieur du modal
+closeModalBtns.forEach(btn => btn.addEventListener("click", () => {
+    modalContainer.style.display = "none";
+}));
+
+window.addEventListener("click", (e) => {
+    if (e.target === modalContainer) {
+        modalContainer.style.display = "none";
+    }
+});
+
+// Fonction pour connecter l'utilisateur et afficher les travaux dans le modal
+function loginUser() {
+    localStorage.setItem("token", "your_token");
+    loginElement.classList.add("hidden");
+    logoutElement.classList.remove("hidden");
+    modalContainer.style.display = 'flex';
+    displayWorksInModal();
+}

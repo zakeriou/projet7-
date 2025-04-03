@@ -11,7 +11,10 @@
 	<link rel="stylesheet" href="./assets/style.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-
+<!-- Mode édition - visible après la connexion -->
+<div id="mode-edition" class="mode-edition hidden">
+	<i class="fa-regular fa-pen-to-square"></i> <span>Mode édition</span>
+</div>
 <body>
 	<header>
 		<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
@@ -38,7 +41,10 @@
 				</article>
 			</section>
 			<section id="portfolio">
-				
+				<div class="fa-port-folio"> 
+					<h2 id="portfolio-title">Mes Projets </h2>
+					<button class="button-modifier"><i class="fa-regular fa-pen-to-square "></i> modifier </button>
+				</div>
 				<div class="filters"></div>
 				<div class="gallery"></div>
 			</section>
