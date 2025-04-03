@@ -47,3 +47,38 @@ async function displayWorks(categoryId) {
 
 displayWorks();
 
+// Fonction pour filtrer les travaux selon la catégorie sélectionnée
+async function filtersWorks(event) {
+    const button = event.target;
+    const categoryId = button.dataset.category;
+    displayWorks(categoryId);
+}
+
+// Fonction pour récupérer toutes les catégories depuis l'API
+async function getCategories() {
+    const response = await fetch(categoriesUrl);
+    const data = await response.json();
+    return data;
+}
+
+// Fonction pour configurer les filtres basés sur les catégories
+async function setupFilters() {
+    const categories = await getCategories();
+
+    const allButton = document.createElement('button');
+    allButton.textContent = "Tous";
+    allButton.dataset.category = "all";
+    allButton.classList.add('active');
+    filtersContainer.appendChild(allButton);
+    allButton.addEventListener("click", filtersWorks);
+
+    categories.forEach(category => {
+        const button = document.createElement('button');
+        button.textContent = category.name;
+        button.dataset.category = category.id;
+        filtersContainer.appendChild(button);
+        button.addEventListener("click", filtersWorks);
+    });
+}
+
+setupFilters();
