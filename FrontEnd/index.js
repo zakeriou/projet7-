@@ -173,3 +173,78 @@ function loginUser() {
     modalContainer.style.display = 'flex';
     displayWorksInModal();
 }
+
+// Fonction pour supprimer un travail de la galerie (via l'API)
+async function deleteWork(workId) {
+    try {
+        const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
+            }
+        });
+
+        if (response.ok) {
+            console.log(`Travail avec ID ${workId} supprimé avec succès`);
+            await displayWorks();
+        } else {
+            console.error('Erreur lors de la suppression du travail');
+            alert('Erreur lors de la suppression du travail.');
+        }
+    } catch (error) {
+        console.error('Erreur de connexion au serveur :', error);
+        alert('Une erreur de connexion est survenue.');
+    }
+}
+
+// Fonction pour réinitialiser le formulaire d'ajout de travail
+function resetForm() {
+    addWorkForm.reset();
+    photoPreview.src = '';
+    photoPreviewContainer.classList.add("hidden");
+    addPhotoBtn.classList.remove("image-selected");
+}
+
+// Fonction pour ajouter un travail à la galerie (via l'API)
+async function addWork(event) {
+    event.preventDefault();
+
+    const formData = new FormData(addWorkForm);
+
+    const response = await fetch('http://localhost:5678/api/works', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem("token")}`,
+        }
+    });
+
+    if (response.ok) {
+        const newWork = await response.json();
+        console.log('Nouveau travail ajouté', newWork);
+        addWorkToGallery(newWork);
+        modalContainer.style.display = "none";
+        resetForm();
+    } else {
+        console.error('Erreur lors de l\'ajout du travail');
+        alert('Erreur lors de l\'ajout du travail.');
+    }
+}
+
+// Ajout d'un nouveau travail à la galerie après l'ajout réussi
+function addWorkToGallery(newWork) {
+    const container = document.querySelector('.gallery');
+
+    const figure = document.createElement('figure');
+    const img = document.createElement('img');
+    img.src = newWork.imageUrl;
+    img.alt = newWork.title;
+
+    const figcaption = document.createElement('figcaption');
+    figcaption.textContent = newWork.title;
+
+    figure.dataset.category = newWork.categoryId;
+    figure.appendChild(img);
+    figure.appendChild(figcaption);
+    container.appendChild(figure);
+}
