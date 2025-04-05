@@ -66,3 +66,13 @@ function logout() {
 }
 
 logoutElement.addEventListener("click", logout);
+
+let button = document.createElement('button');
+button.type = 'button';
+button.classList.add('forgot-password-btn');
+button.textContent = 'Mot de passe oublié';
+
+button.addEventListener('click', function() {
+});
+
+document.body.appendChild(button); 

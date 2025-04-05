@@ -258,12 +258,17 @@ footer nav ul {
 }
 
 .forgot-password-btn {
+	position: absolute;
     background: none;
     border: none;
     color: #070707;
     text-decoration: underline;
     cursor: pointer;
     font-size: 14px;
+	transform: translate(455%, -50%);
+	
+	
+	
 }
 
 /* Modale */
